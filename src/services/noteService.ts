@@ -8,9 +8,9 @@ const api = axios.create({
   headers: { Authorization: `Bearer ${TOKEN}` },
 });
 
-export const deleteNote = async (id: string) => {
-  await api.delete(`/notes/${id}`);
-  return id;
+export const deleteNote = async (id: string): Promise<Note> => {
+  const response = await api.delete<Note>(`/notes/${id}`);
+  return response.data;
 };
 
 export interface FetchNotesParams {
@@ -24,7 +24,9 @@ export interface FetchNotesResponse {
   totalPages: number;
 }
 
-export const createNote = async (note: Omit<Note, "id">): Promise<Note> => {
+export const createNote = async (
+  note: Omit<Note, "id" | "createdAt" | "updatedAt">
+): Promise<Note> => {
   const response = await api.post("/notes", note);
   return response.data;
 };
